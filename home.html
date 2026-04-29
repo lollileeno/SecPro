@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="nav">
+    <a href="/">Home</a>
+    <a href="/login">Vulnerable</a>
+    <a href="/secure_login_page">Secure</a>
+</div>
+
+<div class="container">
+    <h2>Secure Web Application</h2>
+    <p>Choose version to test:</p>
+
+    <a href="/login">Vulnerable Version</a>
+    <a href="/secure_login_page">Secure Version</a>
+</div>
+
+</body>
+</html>

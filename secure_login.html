@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="nav">
+    <a href="/">Home</a>
+    <a href="/login">🔓 Vulnerable</a>
+</div>
+
+<div class="container">
+    <h2 style="color:green;">🔐 Secure Login</h2>
+
+    <form method="POST" action="/secure_login">
+        <input type="text" name="username" placeholder="Enter Username" required>
+        <input type="text" name="password" placeholder="Enter Password" required>
+        <button type="submit">Login Secure</button>
+    </form>
+
+    <a href="/secure_register_page">Create secure account</a>
+</div>
+
+</body>
+</html>

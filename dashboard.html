@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="nav">
+    <a href="/">Home</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<div class="container">
+    <h2>Welcome, {{ user }}</h2>
+
+    <a href="/admin">Vulnerable Admin</a>
+    <a href="/secure_admin">Secure Admin</a>
+</div>
+
+</body>
+</html>

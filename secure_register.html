@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="nav">
+    <a href="/">Home</a>
+    <a href="/register">🔓 Vulnerable</a>
+</div>
+
+<div class="container">
+    <h2 style="color:green;">🔐 Secure Register</h2>
+
+    <form method="POST" action="/secure_register">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="text" name="password" placeholder="Password" required>
+        <button type="submit">Register Secure</button>
+    </form>
+</div>
+
+</body>
+</html>
