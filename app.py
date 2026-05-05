@@ -23,7 +23,7 @@ def register():
     return render_template('register.html')
 
 @app.route('/secure_register')
-def register():
+def secure_register():
     return render_template('secure_register.html')
 
 @app.route('/admin')
@@ -65,7 +65,7 @@ def register_request():
         finally:
             cur.close()
             db_con.close()
-            
+
         flash('Account created successfully!','success')
         return redirect(url_for('/login.html'))
     return render_template('/register.html')
