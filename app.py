@@ -1,4 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, flash
+import os
+import psycopg2
+import bcrypt # For secure password storage
 
 app = Flask(__name__)
 
@@ -11,13 +14,17 @@ def home():
 def login():
     return render_template('login.html')
 
-@app.route('/secure_login_page')
+@app.route('/secure_login')
 def secure_login():
     return render_template('secure_login.html')
 
 @app.route('/register')
 def register():
     return render_template('register.html')
+
+@app.route('/secure_register')
+def register():
+    return render_template('secure_register.html')
 
 @app.route('/admin')
 def admin():
@@ -30,6 +37,38 @@ def secure_admin():
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+
+def create_database_connection():
+    return psycopg2.connect(os.environ.get('DATABASE_URL'))
+
+#--------------vulnerable register----------
+@app.route('/register',methods=['GET','POST'])
+def register_request():
+    if request.method=='POST':
+        username=request.form['username']
+        password=request.form['password']
+
+        db_con=create_database_connection()
+        cur=db_con.cursor()
+
+        sql_query = "INSERT INTO \"USER\" (username, password) VALUES ('" + username + "', '" + password + "')"
+
+        try:
+            cur.execute(sql_query)
+            db_con.commit()
+
+        except Exception as e:
+            flash(f"Registeration faied: {e}",'danger')
+            return render_template('/register.html')
+        
+        finally:
+            cur.close()
+            db_con.close()
+            
+        flash('Account created successfully!','success')
+        return redirect(url_for('/login.html'))
+    return render_template('/register.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
