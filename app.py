@@ -20,19 +20,19 @@ def register():
     return render_template('register.html')
 
 @app.route('/secure_register.html')
-def register():
+def secure_register():
     return render_template('secure_register.html')
 
 @app.route('/dashboard.html')
-def register():
+def dashboard():
     return render_template('dashboard.html')
 
 @app.route('/admid.html')
-def register():
+def admid():
     return render_template('admid.html')
 
 @app.route('/secure_admin.html')
-def register():
+def secure_admin():
     return render_template('secure_admin.html')
 
 if __name__ == '__main__':
