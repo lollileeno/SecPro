@@ -2,38 +2,34 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-# This route handles the main link 
+# Matches home.html
 @app.route('/')
 def home():
     return render_template('home.html')
 
-@app.route('/login.html')
+@app.route('/login')
 def login():
     return render_template('login.html')
 
-@app.route('/secure_login.html')
+@app.route('/secure_login_page')
 def secure_login():
     return render_template('secure_login.html')
 
-@app.route('/register.html')
+@app.route('/register')
 def register():
     return render_template('register.html')
 
-@app.route('/secure_register.html')
-def secure_register():
-    return render_template('secure_register.html')
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
 
-@app.route('/dashboard.html')
-def dashboard():
-    return render_template('dashboard.html')
-
-@app.route('/admid.html')
-def admid():
-    return render_template('admid.html')
-
-@app.route('/secure_admin.html')
+@app.route('/secure_admin')
 def secure_admin():
     return render_template('secure_admin.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
