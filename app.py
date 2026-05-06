@@ -10,8 +10,32 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
-@app.route('/login',methods=['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        db_con = create_database_connection()
+        cur = db_con.cursor()
+
+        # VULNERABLE: Look for the user in the database
+        sql = f"SELECT * FROM \"USER\" WHERE username = '{username}' AND password = '{password}'"
+        cur.execute(sql)
+        user = cur.fetchone() # This tries to find one matching row
+
+        cur.close()
+        db_con.close()
+
+        if user:
+            # SUCCESS: The user exists and password matches
+            flash('Welcome back!', 'success')
+            return redirect(url_for('dashboard')) # THIS is how they get to the dashboard
+        else:
+            # FAILURE: Wrong username or password
+            flash('Invalid credentials!', 'danger')
+            return render_template('login.html')
+
     return render_template('login.html')
 
 @app.route('/secure_login')
