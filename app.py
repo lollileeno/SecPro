@@ -14,6 +14,7 @@ def create_database_connection():
 
 
 # Leena: RBAC Decorator Definition
+# Leena: RBAC Decorator Definition
 def requires_roles(*roles):
     def wrapper(f):
         @wraps(f)
@@ -26,7 +27,8 @@ def requires_roles(*roles):
             # Check if user has the correct role
             if session.get('role') not in roles:
                 flash('Access denied: You do not have permission to view this page.', 'danger')
-                return redirect(url_for('home'))
+                # Bounces the user back to the page they just came from (or dashboard as a backup)
+                return redirect(request.referrer or url_for('dashboard'))
 
             return f(*args, **kwargs)
 
