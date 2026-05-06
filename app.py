@@ -204,23 +204,23 @@ def secure_admin():
     return render_template('secure_admin.html')
 
 
-@app.route('/dashboard')
-@requires_roles('admin', 'user')  # Require login to see the dashboard , Leena
-def dashboard():
+#@app.route('/dashboard')
+#@requires_roles('admin', 'user')  # Require login to see the dashboard , Leena
+#def dashboard():
     # 1. Open database connection, Shahad
-    db_con = create_database_connection()
-    cur = db_con.cursor()
+   # db_con = create_database_connection()
+   # cur = db_con.cursor()
     
     # 2. Fetch all comments from the database, Shahad
-    cur.execute("SELECT content FROM comment")
-    comments = cur.fetchall()
+   # cur.execute("SELECT content FROM comment")
+   # comments = cur.fetchall()
     
     # 3. Close connection, Shahad
-    cur.close()
-    db_con.close()
+   # cur.close()
+   # db_con.close()
     
     # 4. Pass the comments to the HTML template, Shahad
-    return render_template('dashboard.html', comments=comments)
+    #return render_template('dashboard.html', comments=comments)
 
 
 # Added a logout route to help you test different users easily, Leena
@@ -231,25 +231,49 @@ def logout():
     return redirect(url_for('home'))
 
 #Shahad's edits
+@app.route('/dashboard')
+@requires_roles('admin', 'user')  # Keep Leena's protection!
+def dashboard():
+    try:
+        db_con = create_database_connection()
+        cur = db_con.cursor()
+        
+        # FIX 1: Add quotes around "COMMENT" so PostgreSQL can find it
+        cur.execute('SELECT content FROM "COMMENT"')
+        comments = cur.fetchall()
+        
+        cur.close()
+        db_con.close()
+        
+        # FIX 2: Pass the username so the "Welcome, [user]" HTML works
+        return render_template('dashboard.html', user=session.get('username'), comments=comments)
+        
+    except Exception as e:
+        # FIX 3: If it crashes, show the exact error on the screen!
+        return f"<h1>Dashboard Crash Report:</h1><p>{e}</p>"
+
+
 @app.route('/add_comment', methods=['POST'])
 def add_comment():
-    content = request.form['content']
-    
-    # hardcode the user_id as 1 just to make the comment work
-    user_id = 1 
-    
-    db_con = create_database_connection()
-    cur = db_con.cursor()
-    
-    # Insert the comment into the COMMENT table
-    sql = "INSERT INTO comment (content, user_id) VALUES (%s, %s)"
-    cur.execute(sql, (content, user_id))
-    db_con.commit()
-    
-    cur.close()
-    db_con.close()
-    
-    return redirect(url_for('dashboard'))
+    try:
+        content = request.form['content']
+        user_id = 1 
+        
+        db_con = create_database_connection()
+        cur = db_con.cursor()
+        
+        # FIX 4: Add quotes around "COMMENT" here too
+        sql = 'INSERT INTO "COMMENT" (content, user_id) VALUES (%s, %s)'
+        cur.execute(sql, (content, user_id))
+        db_con.commit()
+        
+        cur.close()
+        db_con.close()
+        
+        return redirect(url_for('dashboard'))
+        
+    except Exception as e:
+        return f"<h1>Add Comment Crash Report:</h1><p>{e}</p>"
 
 
 if __name__ == '__main__':
