@@ -10,7 +10,7 @@ app = Flask(__name__)
 def home():
     return render_template('home.html')
 
-@app.route('/login')
+@app.route('/login',methods=['GET','POST'])
 def login():
     return render_template('login.html')
 
