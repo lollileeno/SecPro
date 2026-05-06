@@ -42,33 +42,8 @@ def login():
 def secure_login():
     return render_template('secure_login.html')
 
-@app.route('/register')
-def register():
-    return render_template('register.html')
-
-@app.route('/secure_register')
-def secure_register():
-    return render_template('secure_register.html')
-
-@app.route('/admin')
-def admin():
-    return render_template('admin.html')
-
-@app.route('/secure_admin')
-def secure_admin():
-    return render_template('secure_admin.html')
-
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
-
-
-def create_database_connection():
-    return psycopg2.connect(os.environ.get('DATABASE_URL'))
-
-#--------------vulnerable register----------
 @app.route('/register',methods=['GET','POST'])
-def register_request():
+def register():
     if request.method=='POST':
         username=request.form['username']
         password=request.form['password']
@@ -91,8 +66,31 @@ def register_request():
             db_con.close()
 
         flash('Account created successfully!','success')
-        return redirect(url_for('/login.html'))
+        return redirect(url_for('login'))
     return render_template('/register.html')
+
+@app.route('/secure_register')
+def secure_register():
+    return render_template('secure_register.html')
+
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+@app.route('/secure_admin')
+def secure_admin():
+    return render_template('secure_admin.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+
+def create_database_connection():
+    return psycopg2.connect(os.environ.get('DATABASE_URL'))
+
+#--------------vulnerable register----------
+
 
 if __name__ == '__main__':
     app.run(debug=True)
