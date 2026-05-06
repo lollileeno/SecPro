@@ -21,12 +21,12 @@ def requires_roles(*roles):
             # Check if user is logged in
             if 'username' not in session:
                 flash('Please log in to access this page.', 'danger')
-                return redirect(url_for('secure_login'))
+                return redirect(url_for('home'))
 
             # Check if user has the correct role
             if session.get('role') not in roles:
                 flash('Access denied: You do not have permission to view this page.', 'danger')
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('home'))
 
             return f(*args, **kwargs)
 
@@ -35,40 +35,39 @@ def requires_roles(*roles):
     return wrapper
 
 
-
 @app.route('/')  # ايمان: مهمتها تعلم السيرفر ايش الفنكشن اللي يشغلها في حال رابطنا ملحق ب '/' انفتح
 def home():
     return render_template('home.html')  # تحمل الملف المراد على براوزر اليوزر
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST']) #the updated func!
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        md5hash_password = hashlib.md5(
-            password.encode()).hexdigest()  # هذا التشفير الضعيف MD5 first convert password text into byte by encode() then feed it into hash algo then convert the output into hexadicimal
+        md5hash_password = hashlib.md5(password.encode()).hexdigest()
 
-        # ايمان: الاتصال بالداتابيس
         db_con = create_database_connection()
         cur = db_con.cursor()
 
-        sql = f"SELECT * FROM \"USER\" WHERE username = '{username}' AND password = '{md5hash_password}'"
+        # Vulnerable to SQL Injection + Fetching role
+        sql = f"SELECT username, role FROM \"USER\" WHERE username = '{username}' AND password = '{md5hash_password}'"
         cur.execute(sql)
         user = cur.fetchone()
 
-        # نسكر الاتصال بالداتابيس
         cur.close()
         db_con.close()
 
         if user:
-            flash('Welcome back!',
-                  'success')  # رسالة المفروض تظهر لليوزر في البراوزر لكن اعتقد لازم يكون في كود اضافي في ملف اتش  تي ام ال
-            return redirect(url_for('dashboard'))  # if user exist move to url in func dashboard()
+            # Hand the user their session data so the dashboard works
+            session['username'] = user[0]
+            session['role'] = user[1] 
+            
+            flash('Welcome back!', 'success')
+            return redirect(url_for('dashboard')) 
         else:
             flash('Invalid username or password!', 'danger')
-            return render_template(
-                'login.html')  # اذا اليوزر نل معناه يا الباسورد او اليوزرنيم خطا لذلك اجلس على نفس صفحة ريجستريشن
+            return render_template('login.html') 
 
     return render_template('login.html')
 
@@ -81,7 +80,7 @@ def secure_login():
         username = request.form["username"]
         password = request.form["password"]
 
-        # Modified to fetch the role as well , Leena
+        # Secure query (Parameterized) to fetch password and role, Leena
         sql = "SELECT password, role FROM \"USER\" WHERE username= %s"
 
         db_con = create_database_connection()
@@ -93,13 +92,18 @@ def secure_login():
         db_con.close()
 
         # user_data[0] is password, user_data[1] is role
-        if user_data and bcrypt.checkpw(password.encode('utf-8'), user_data[0].encode('utf-8')):
-            # Set the session variables upon successful login
-            session['username'] = username
-            session['role'] = user_data[1]
-            return redirect(url_for('dashboard'))
-        else:
-            flash('Invalid username or password!', 'danger')
+        try:
+            if user_data and bcrypt.checkpw(password.encode('utf-8'), user_data[0].encode('utf-8')):
+                # Set the session variables upon successful login
+                session['username'] = username
+                session['role'] = user_data[1]
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Invalid username or password!', 'danger')
+                return render_template('secure_login.html')
+        except ValueError:
+            # Prevent crash if MD5 hash is checked by Bcrypt
+            flash('Invalid username or password! (Hash mismatch)', 'danger')
             return render_template('secure_login.html')
 
     return render_template('secure_login.html')
@@ -115,22 +119,21 @@ def register():
         db_con = create_database_connection()
         cur = db_con.cursor()
 
-        sql_query = f"INSERT INTO \"USER\" (username, password) VALUES ('{username}', '{md5hash_password}')"
+        # Vulnerable SQL Injection + default 'user' role
+        sql_query = f"INSERT INTO \"USER\" (username, password, role) VALUES ('{username}', '{md5hash_password}', 'user')"
 
         try:
             cur.execute(sql_query)
             db_con.commit()
-
+            flash('Account created successfully!', 'success')
+            return redirect(url_for('login'))
         except Exception as e:
-            flash(f"Registeration faied: {e}", 'danger')
+            flash(f"Registeration failed: {e}", 'danger')
             return render_template('register.html')
-
         finally:
             cur.close()
             db_con.close()
 
-        flash('Account created successfully!', 'success')
-        return redirect(url_for('login'))
     return render_template('register.html')
 
 
@@ -141,8 +144,8 @@ def secure_register():
         password = request.form["password"]
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
-        # Modified to insert a default 'user' role , Leena
-        sql = "INSERT INTO \"USER\" (username,password, role) VALUES  (%s,%s,%s)"
+        # Parameterized Query + default 'user' role, Leena
+        sql = "INSERT INTO \"USER\" (username, password, role) VALUES (%s, %s, %s)"
         info = (username, hashed_password, 'user')
 
         db_con = create_database_connection()
@@ -150,6 +153,7 @@ def secure_register():
         try:
             cur.execute(sql, info)
             db_con.commit()
+            flash('Account created securely!', 'success')
             return redirect(url_for('secure_login'))
         except Exception as e:
             flash(f'Registration failed!\nerror:{e}', 'danger')
@@ -163,6 +167,7 @@ def secure_register():
 
 @app.route('/admin')
 def admin():
+    # Vulnerable route: No access control here!
     return render_template('admin.html')
 
 
@@ -172,25 +177,6 @@ def secure_admin():
     return render_template('secure_admin.html')
 
 
-@app.route('/dashboard')
-@requires_roles('admin', 'user')  # Require login to see the dashboard , Leena
-def dashboard():
-    # 1. Open database connection, Shahad
-    db_con = create_database_connection()
-    cur = db_con.cursor()
-    
-    # 2. Fetch all comments from the database, Shahad
-    cur.execute("SELECT content FROM comment")
-    comments = cur.fetchall()
-    
-    # 3. Close connection, Shahad
-    cur.close()
-    db_con.close()
-    
-    # 4. Pass the comments to the HTML template, Shahad
-    return render_template('dashboard.html', comments=comments)
-
-
 # Added a logout route to help you test different users easily, Leena
 @app.route('/logout')
 def logout():
@@ -198,26 +184,60 @@ def logout():
     flash('You have been logged out.', 'success')
     return redirect(url_for('home'))
 
+
 #Shahad's edits
+@app.route('/dashboard')
+@requires_roles('admin', 'user')  # Keep Leena's protection!
+def dashboard():
+    try:
+        db_con = create_database_connection()
+        cur = db_con.cursor()
+        
+        cur.execute('SELECT content FROM "COMMENT"')
+        comments = cur.fetchall()
+        
+        cur.close()
+        db_con.close()
+        
+        # Pass the username and role so the HTML works
+        return render_template('dashboard.html', 
+                               user=session.get('username'), 
+                               role=session.get('role'),
+                               comments=comments)
+        
+    except Exception as e:
+        return f"<h1>Dashboard Crash Report:</h1><p>{e}</p>"
+
+
 @app.route('/add_comment', methods=['POST'])
+@requires_roles('admin', 'user') # Protect this route!
 def add_comment():
-    content = request.form['content']
-    
-    # hardcode the user_id as 1 just to make the comment work
-    user_id = 1 
-    
-    db_con = create_database_connection()
-    cur = db_con.cursor()
-    
-    # Insert the comment into the COMMENT table
-    sql = "INSERT INTO comment (content, user_id) VALUES (%s, %s)"
-    cur.execute(sql, (content, user_id))
-    db_con.commit()
-    
-    cur.close()
-    db_con.close()
-    
-    return redirect(url_for('dashboard'))
+    try:
+        content = request.form['content']
+        username = session.get('username')
+        
+        db_con = create_database_connection()
+        cur = db_con.cursor()
+        
+        # Fetch the actual user_id of the logged-in user
+        cur.execute("SELECT user_id FROM \"USER\" WHERE username = %s", (username,))
+        user_data = cur.fetchone()
+        
+        if user_data:
+            user_id = user_data[0]
+            
+            # Insert the comment with the correct user_id
+            sql = 'INSERT INTO "COMMENT" (content, user_id) VALUES (%s, %s)'
+            cur.execute(sql, (content, user_id))
+            db_con.commit()
+        
+        cur.close()
+        db_con.close()
+        
+        return redirect(url_for('dashboard'))
+        
+    except Exception as e:
+        return f"<h1>Add Comment Crash Report:</h1><p>{e}</p>"
 
 
 if __name__ == '__main__':

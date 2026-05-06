@@ -13,27 +13,31 @@
 </div>
 
 <div class="container">
-    <h2>Welcome, {{ user }}</h2>
-
-    <a href="/admin">Vulnerable Admin</a>
-    <a href="/secure_admin">Secure Admin</a>
+    <h2>Welcome, {{ user }}!</h2>
+    <p style="color: gray; font-size: 0.9em;">Your Role: <strong>{{ role }}</strong></p>
 
     <hr style="margin: 20px 0;">
-<h3>Leave a Comment</h3>
+    
+    <h3>Test Access Control:</h3>
+    <a href="/admin" style="background-color: #ffcccc; color: #cc0000; border: 1px solid #cc0000;">1. Vulnerable Admin (No Protection)</a>
+    <a href="/secure_admin" style="background-color: #ccffcc; color: #006600; border: 1px solid #006600;">2. Secure Admin (Protected)</a>
 
-<form method="POST" action="/add_comment">
-    <textarea name="content" placeholder="Write something..." required style="width: 100%; height: 60px; margin-bottom: 10px;"></textarea>
-    <button type="submit">Post Comment</button>
-</form>
+    <hr style="margin: 20px 0;">
+    <h3>Leave a Comment</h3>
 
-<h3 style="margin-top: 20px;">Recent Comments:</h3>
-<ul style="text-align: left; background: #eee; padding: 10px; list-style-type: none;">
-    {% for comment in comments %}
-        <li style="margin-bottom: 5px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
-            {{ comment[0] | safe }}
-        </li>
-    {% endfor %}
-</ul>
+    <form method="POST" action="/add_comment">
+        <textarea name="content" placeholder="Write something..." required style="width: 100%; height: 60px; margin-bottom: 10px;"></textarea>
+        <button type="submit">Post Comment</button>
+    </form>
+
+    <h3 style="margin-top: 20px;">Recent Comments:</h3>
+    <ul style="text-align: left; background: #eee; padding: 10px; list-style-type: none;">
+        {% for comment in comments %}
+            <li style="margin-bottom: 5px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
+                {{ comment[0] | safe }}
+            </li>
+        {% endfor %}
+    </ul>
 </div>
 
 </body>
