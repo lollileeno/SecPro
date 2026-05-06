@@ -38,6 +38,9 @@ nav ul:not(img){
   flex-direction: row;
   justify-content: flex-end;
 }
+nav ul{
+  padding:0;
+}
 nav li:first-child {
     margin-right: auto;
     padding: 1rem;
