@@ -6,7 +6,9 @@ import bcrypt # For secure password storage
 app = Flask(__name__)
 app.secret_key = 'hvjgi' # Add this line
 
-# Matches home.html
+def create_database_connection():
+    return psycopg2.connect(os.environ.get('DATABASE_URL'))
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -20,7 +22,6 @@ def login():
         db_con = create_database_connection()
         cur = db_con.cursor()
 
-        # VULNERABLE: Look for the user in the database
         sql = f"SELECT * FROM \"USER\" WHERE username = '{username}' AND password = '{password}'"
         cur.execute(sql)
         user = cur.fetchone() # This tries to find one matching row
@@ -29,12 +30,10 @@ def login():
         db_con.close()
 
         if user:
-            # SUCCESS: The user exists and password matches
             flash('Welcome back!', 'success')
-            return redirect(url_for('dashboard')) # THIS is how they get to the dashboard
+            return redirect(url_for('dashboard')) 
         else:
-            # FAILURE: Wrong username or password
-            flash('Invalid credentials!', 'danger')
+            flash('Invalid username or password!', 'danger')
             return render_template('login.html')
 
     return render_template('login.html')
@@ -59,7 +58,6 @@ def register():
             db_con.commit()
 
         except Exception as e:
-            db_con.rollback()
             flash(f"Registeration faied: {e}",'danger')
             return render_template('register.html')
         
@@ -85,13 +83,9 @@ def secure_admin():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html', user="User")
+    return render_template('dashboard.html')
 
 
-def create_database_connection():
-    return psycopg2.connect(os.environ.get('DATABASE_URL'))
-
-#--------------vulnerable register----------
 
 
 if __name__ == '__main__':
