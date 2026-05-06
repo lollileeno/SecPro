@@ -185,6 +185,27 @@ def logout():
     flash('You have been logged out.', 'success')
     return redirect(url_for('home'))
 
+#Shahad's edits
+@app.route('/add_comment', methods=['POST'])
+def add_comment():
+    content = request.form['content']
+    
+    # hardcode the user_id as 1 just to make the comment work
+    user_id = 1 
+    
+    db_con = create_database_connection()
+    cur = db_con.cursor()
+    
+    # Insert the comment into the COMMENT table
+    sql = "INSERT INTO comment (content, user_id) VALUES (%s, %s)"
+    cur.execute(sql, (content, user_id))
+    db_con.commit()
+    
+    cur.close()
+    db_con.close()
+    
+    return redirect(url_for('dashboard'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
