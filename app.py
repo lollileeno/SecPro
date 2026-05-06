@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 import os
 import psycopg2
 import bcrypt # For secure password storage
+import hashlib
 
 app = Flask(__name__)
 app.secret_key = 'hvjgi' # Add this line
@@ -18,13 +19,14 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        md5hash_password= hashlib.md5(password.encode()).hexdigest()
 
         db_con = create_database_connection()
         cur = db_con.cursor()
 
-        sql = f"SELECT * FROM \"USER\" WHERE username = '{username}' AND password = '{password}'"
+        sql = f"SELECT * FROM \"USER\" WHERE username = '{username}' AND password = '{md5hash_password}'"
         cur.execute(sql)
-        user = cur.fetchone() # This tries to find one matching row
+        user = cur.fetchone() 
 
         cur.close()
         db_con.close()
@@ -38,8 +40,29 @@ def login():
 
     return render_template('login.html')
 
-@app.route('/secure_login')
+@app.route('/secure_login',methods=['POST','GET'])
 def secure_login():
+    if request.method=='POST':
+        username=request.form["username"]
+        password=request.form["password"]    
+
+        sql="SELECT password FROM \"USER\" WHERE username= %s"
+        #info=(username,hashed_password)
+
+        db_con=create_database_connection()
+        cur=db_con.cursor()
+        cur.execute(sql,(username,))
+        hash_password_db=cur.fetchone()
+
+        cur.close()
+        db_con.close()
+
+        if hash_password_db and bcrypt.checkpw(password.encode('utf-8'), hash_password_db[0].encode('utf-8')):
+            return redirect(url_for('dashboard'))
+        else:
+            flash('Invalid username or password!','danger')
+            return render_template('secure_login.html')
+    
     return render_template('secure_login.html')
 
 @app.route('/register',methods=['GET','POST'])
@@ -47,11 +70,12 @@ def register():
     if request.method=='POST':
         username=request.form['username']
         password=request.form['password']
+        md5hash_password= hashlib.md5(password.encode()).hexdigest()
 
         db_con=create_database_connection()
         cur=db_con.cursor()
 
-        sql_query = f"INSERT INTO \"USER\" (username, password) VALUES ('{username}', '{password}')"
+        sql_query = f"INSERT INTO \"USER\" (username, password) VALUES ('{username}', '{md5hash_password}')"
 
         try:
             cur.execute(sql_query)
@@ -69,8 +93,29 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html')
 
-@app.route('/secure_register')
+@app.route('/secure_register',methods=['GET','POST'])
 def secure_register():
+    if request.method=='POST':
+        username=request.form["username"]
+        password=request.form["password"]   
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+        sql="INSERT INTO \"USER\" (username,password) VALUES  (%s,%s)"
+        info=(username,hashed_password)
+
+        db_con=create_database_connection()
+        cur=db_con.cursor()
+        try:
+            cur.execute(sql,info)
+            db_con.commit()
+            return redirect(url_for('secure_login'))
+        except Exception as e:
+            flash(f'Registration failed!\nerror:{e}','danger')
+            return render_template('secure_register.html')
+        finally:
+            cur.close()
+            db_con.close()
+
     return render_template('secure_register.html')
 
 @app.route('/admin')
