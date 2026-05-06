@@ -1,18 +1,18 @@
-/* 
+
 :root {
     --primary: #007bff;
     --primary-hover: #0056b3;
     --danger: #dc3545;
     --danger-hover: #bb2d3b;
     --success: #198754;
-    --bg-color: #f4f6f9;
+    /* --bg-color: #f4f6f9; */
     --card-bg: #ffffff;
     --text-main: #212529;
     --text-muted: #6c757d;
     --border-color: #dee2e6;
     --radius: 12px;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-} */
+} 
 
 * {
   margin: 0;
