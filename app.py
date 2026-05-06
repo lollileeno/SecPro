@@ -10,36 +10,40 @@ app.secret_key = 'hvjgi' # Add this line
 def create_database_connection():
     return psycopg2.connect(os.environ.get('DATABASE_URL'))
 
-@app.route('/')
+@app.route('/') # ايمان: مهمتها تعلم السيرفر ايش الفنكشن اللي يشغلها في حال رابطنا ملحق ب '/' انفتح
 def home():
-    return render_template('home.html')
+    return render_template('home.html') # تحمل الملف المراد على براوزر اليوزر
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        md5hash_password= hashlib.md5(password.encode()).hexdigest()
+        md5hash_password= hashlib.md5(password.encode()).hexdigest() #هذا التشفير الضعيف MD5 first convert password text into byte by encode() then feed it into hash algo then convert the output into hexadicimal
 
+        #ايمان: الاتصال بالداتابيس  
         db_con = create_database_connection()
         cur = db_con.cursor()
-
+        
         sql = f"SELECT * FROM \"USER\" WHERE username = '{username}' AND password = '{md5hash_password}'"
         cur.execute(sql)
         user = cur.fetchone() 
-
+        
+        #نسكر الاتصال بالداتابيس
         cur.close()
         db_con.close()
 
-        if user:
-            flash('Welcome back!', 'success')
-            return redirect(url_for('dashboard')) 
+        if user:  
+            flash('Welcome back!', 'success') #  رسالة المفروض تظهر لليوزر في البراوزر لكن اعتقد لازم يكون في كود اضافي في ملف اتش  تي ام ال
+            return redirect(url_for('dashboard')) # if user exist move to url in func dashboard()
         else:
             flash('Invalid username or password!', 'danger')
-            return render_template('login.html')
+            return render_template('login.html') #اذا اليوزر نل معناه يا الباسورد او اليوزرنيم خطا لذلك اجلس على نفس صفحة ريجستريشن
 
     return render_template('login.html')
 
+#ايمان :تعبت من كتابة الكومنتات لباقي الكود، بكمل بكرة
+#معليش بعض الكومنتات بالعربي وبعضها بالانجليزي حسب اللي الاسهل علي
 @app.route('/secure_login',methods=['POST','GET'])
 def secure_login():
     if request.method=='POST':
