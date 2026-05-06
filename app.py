@@ -51,7 +51,7 @@ def register():
         db_con=create_database_connection()
         cur=db_con.cursor()
 
-        sql_query = "INSERT INTO \"USER\" (username, password) VALUES ('" + username + "', '" + password + "')"
+        sql_query = f"INSERT INTO \"USER\" (username, password) VALUES ('{username}', '{password}')"
 
         try:
             cur.execute(sql_query)
