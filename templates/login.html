@@ -15,6 +15,16 @@
 <div class="container">
     <h2 style="color:red;">Vulnerable Login</h2>
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <p style="color: {% if category == 'danger' %}red{% else %}green{% endif %}; font-weight: bold; margin-bottom: 10px;">
+        {{ message }}
+      </p>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
     <form method="POST">
         <input type="text" name="username" placeholder="Enter Username" required>
         <input type="text" name="password" placeholder="Enter Password" required>
