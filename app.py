@@ -40,35 +40,67 @@ def requires_roles(*roles):
 def home():
     return render_template('home.html')  # تحمل الملف المراد على براوزر اليوزر
 
+# There was a problem with this function, causing the XSS test NOT to work well, so the updated code is right after it, Shahad
+#@app.route('/login', methods=['GET', 'POST'])
+#def login():
+    #if request.method == 'POST':
+       # username = request.form['username']
+        #password = request.form['password']
+        #md5hash_password = hashlib.md5(
+            #password.encode()).hexdigest()  # هذا التشفير الضعيف MD5 first convert password text into byte by encode() then feed it into hash algo then convert the output into hexadicimal
 
-@app.route('/login', methods=['GET', 'POST'])
+        # ايمان: الاتصال بالداتابيس
+       # db_con = create_database_connection()
+       # cur = db_con.cursor()
+
+        #sql = f"SELECT * FROM \"USER\" WHERE username = '{username}' AND password = '{md5hash_password}'"
+        #cur.execute(sql)
+        #user = cur.fetchone()
+
+        # نسكر الاتصال بالداتابيس
+        #cur.close()
+        #db_con.close()
+
+        #if user:
+            #flash('Welcome back!',
+                #  'success')  # رسالة المفروض تظهر لليوزر في البراوزر لكن اعتقد لازم يكون في كود اضافي في ملف اتش  تي ام ال
+            #return redirect(url_for('dashboard'))  # if user exist move to url in func dashboard()
+        #else:
+           # flash('Invalid username or password!', 'danger')
+           # return render_template(
+               # 'login.html')  # اذا اليوزر نل معناه يا الباسورد او اليوزرنيم خطا لذلك اجلس على نفس صفحة ريجستريشن
+
+    #return render_template('login.html')
+
+@app.route('/login', methods=['GET', 'POST']) #the updated func!
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        md5hash_password = hashlib.md5(
-            password.encode()).hexdigest()  # هذا التشفير الضعيف MD5 first convert password text into byte by encode() then feed it into hash algo then convert the output into hexadicimal
+        md5hash_password = hashlib.md5(password.encode()).hexdigest()
 
-        # ايمان: الاتصال بالداتابيس
         db_con = create_database_connection()
         cur = db_con.cursor()
 
-        sql = f"SELECT * FROM \"USER\" WHERE username = '{username}' AND password = '{md5hash_password}'"
+        # FIX 1: We must ask the database for the user's role too
+        # Note: If your database column is named 'usertype', change the word 'role' to 'usertype' below
+        sql = f"SELECT username, role FROM \"USER\" WHERE username = '{username}' AND password = '{md5hash_password}'"
         cur.execute(sql)
         user = cur.fetchone()
 
-        # نسكر الاتصال بالداتابيس
         cur.close()
         db_con.close()
 
         if user:
-            flash('Welcome back!',
-                  'success')  # رسالة المفروض تظهر لليوزر في البراوزر لكن اعتقد لازم يكون في كود اضافي في ملف اتش  تي ام ال
-            return redirect(url_for('dashboard'))  # if user exist move to url in func dashboard()
+            # FIX 2: Hand the user their "VIP pass" so Leena's decorator lets them in!
+            session['username'] = user[0]
+            session['role'] = user[1] 
+            
+            flash('Welcome back!', 'success')
+            return redirect(url_for('dashboard')) 
         else:
             flash('Invalid username or password!', 'danger')
-            return render_template(
-                'login.html')  # اذا اليوزر نل معناه يا الباسورد او اليوزرنيم خطا لذلك اجلس على نفس صفحة ريجستريشن
+            return render_template('login.html') 
 
     return render_template('login.html')
 
