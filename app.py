@@ -4,6 +4,7 @@ import psycopg2
 import bcrypt # For secure password storage
 
 app = Flask(__name__)
+app.secret_key = 'hvjgi' # Add this line
 
 # Matches home.html
 @app.route('/')
@@ -58,8 +59,9 @@ def register():
             db_con.commit()
 
         except Exception as e:
+            db_con.rollback()
             flash(f"Registeration faied: {e}",'danger')
-            return render_template('/register.html')
+            return render_template('register.html')
         
         finally:
             cur.close()
@@ -67,7 +69,7 @@ def register():
 
         flash('Account created successfully!','success')
         return redirect(url_for('login'))
-    return render_template('/register.html')
+    return render_template('register.html')
 
 @app.route('/secure_register')
 def secure_register():
@@ -83,7 +85,7 @@ def secure_admin():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', user="User")
 
 
 def create_database_connection():
