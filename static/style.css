@@ -32,7 +32,6 @@ nav {
     box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
     font-weight: 500;
     background-color: #a8dfff6e;
-    border-radius: 5rem;
 }
 nav ul:not(img){
   display: flex;
