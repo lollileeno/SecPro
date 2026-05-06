@@ -175,7 +175,20 @@ def secure_admin():
 @app.route('/dashboard')
 @requires_roles('admin', 'user')  # Require login to see the dashboard , Leena
 def dashboard():
-    return render_template('dashboard.html')
+    # 1. Open database connection, Shahad
+    db_con = create_database_connection()
+    cur = db_con.cursor()
+    
+    # 2. Fetch all comments from the database, Shahad
+    cur.execute("SELECT content FROM comment")
+    comments = cur.fetchall()
+    
+    # 3. Close connection, Shahad
+    cur.close()
+    db_con.close()
+    
+    # 4. Pass the comments to the HTML template, Shahad
+    return render_template('dashboard.html', comments=comments)
 
 
 # Added a logout route to help you test different users easily, Leena
