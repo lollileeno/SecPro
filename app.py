@@ -122,7 +122,7 @@ def register():
         cur = db_con.cursor()
 
         # Vulnerable SQL Injection + default 'user' role
-        sql_query = f"INSERT INTO \"USER\" (username, password, role) VALUES ('{username}', '{md5hash_password}', 'user')"
+        sql_query = f"INSERT INTO \"USER\" (username, password) VALUES ('{username}', '{md5hash_password}')"
 
         try:
             cur.execute(sql_query)
@@ -130,6 +130,7 @@ def register():
             flash('Account created successfully!', 'success')
             return redirect(url_for('login'))
         except Exception as e:
+            print(e)
             flash(f"Registeration failed: {e}", 'danger')
             return render_template('register.html')
         finally:
