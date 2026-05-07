@@ -208,7 +208,7 @@ def dashboard():
         return render_template('dashboard.html', 
                                user=session.get('username'), 
                                role=session.get('role'),
-                               comments=comments
+                               comments=comments,
                                is_secure=session.get('is_secure') 
                               )
         
