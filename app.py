@@ -64,6 +64,7 @@ def login():
             # Hand the user their session data so the dashboard works
             session['username'] = user[0]
             session['role'] = user[1] 
+            session['is_secure'] = False
             
             flash('Welcome back!', 'success')
             return redirect(url_for('dashboard')) 
@@ -99,6 +100,7 @@ def secure_login():
                 # Set the session variables upon successful login
                 session['username'] = username
                 session['role'] = user_data[1]
+                session['is_secure'] = True
                 return redirect(url_for('dashboard'))
             else:
                 flash('Invalid username or password!', 'danger')
@@ -202,11 +204,13 @@ def dashboard():
         cur.close()
         db_con.close()
         
-        # Pass the username and role so the HTML works
+        # Pass the username, role, and security flag so the HTML works
         return render_template('dashboard.html', 
                                user=session.get('username'), 
                                role=session.get('role'),
-                               comments=comments)
+                               comments=comments
+                               is_secure=session.get('is_secure') 
+                              )
         
     except Exception as e:
         return f"<h1>Dashboard Crash Report:</h1><p>{e}</p>"
