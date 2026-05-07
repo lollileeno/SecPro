@@ -245,7 +245,26 @@ def add_comment():
         
     except Exception as e:
         return f"<h1>Add Comment Crash Report:</h1><p>{e}</p>"
-
-
+#----------------------------------------------------------------
+@app.route('/reset_comments')
+def reset_comments():
+    try:
+        db_con = create_database_connection()
+        cur = db_con.cursor()
+        
+        # This SQL command deletes all rows inside the COMMENT table
+        cur.execute('DELETE FROM "COMMENT"')
+        db_con.commit()
+        
+        cur.close()
+        db_con.close()
+        
+        flash('All comments have been successfully deleted!', 'success')
+        return redirect(url_for('dashboard'))
+        
+    except Exception as e:
+        return f"<h1>Reset Crash Report:</h1><p>{e}</p>"
+#------------------------------------------------------------------------
+        
 if __name__ == '__main__':
     app.run(debug=True)
