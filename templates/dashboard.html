@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-<div class="nav">
-    <a href="/">Home</a>
-    <a href="/logout">Logout</a>
-</div>
+<header>
+         <nav>
+            <ul>
+            <li><a href="/" > Home </a></li>
+            <li><a href="/logout"> Logout </a></li>
+            </ul>
+        </nav>
+    </header>
 
-<div class="container">
+
+<div class="container"  style="height:auto" id="c2">
     <h2>Welcome, {{ user }}!</h2>
     <p style="color: gray; font-size: 0.9em;">Your Role: <strong>{{ role }}</strong></p>
 
@@ -31,7 +36,7 @@
     </form>
 
     <h3 style="margin-top: 20px;">Recent Comments:</h3>
-    <ul style="text-align: left; background: #eee; padding: 10px; list-style-type: none;">
+    <ul class="comments" style="text-align: left; background: #eee; padding: 10px; list-style-type: none;">
         {% for comment in comments %}
             <li style="margin-bottom: 5px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
                 

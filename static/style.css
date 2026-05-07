@@ -29,9 +29,9 @@ nav {
     direction: ltr;
     margin: 0;
     backdrop-filter: blur(2px);
-    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.008);
     font-weight: 500;
-    background-color: #a8dfff6e;
+    /* background-color: rgba(255, 255, 255, 0.431); */
 }
 nav ul:not(img){
   display: flex;
@@ -40,17 +40,17 @@ nav ul:not(img){
 }
 nav ul{
   padding:0;
-}
-nav li:first-child {
-    margin-right: auto;
-    padding: 1rem;
+  margin:0;
+  border: 0;
 }
 li{
     list-style: none;
     margin-right: 2rem;;
 }
 nav a{
-color:rgb(7, 55, 96);
+color:rgb(255, 255, 255);
+font-weight: 700;
+text-shadow: 0 0px 10px rgba(95, 146, 255, 0.5);
 text-align: center;
 padding: 2rem;
 }
@@ -65,19 +65,53 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-image: linear-gradient(to right top, #ffffff, #f9f9ff, #f3f4ff, #ebefff, #e2eaff, #d6e4ff, #c8deff, #b9d8ff, #a1d0ff, #83c8ff, #5dc0ff, #05b9ff);
+  background-repeat: no-repeat; 
+  background-size: cover;     
+  background-position: center;
+    background-attachment: fixed;
+
 }
 
 
 .container {
-  background: white;
+  background-color: #ffffff6e;
   padding: 30px;
   margin: 10rem;
-  border-radius: 12px;
-  width: 350px;
+  border-radius: 3rem;
+  font-size: large;
+  width: 700px;
+  height: 400px;
+  align-content: center;
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   text-align: center;
 }
 
+#c1 a{
+  background-color: #ffffffab;
+  /* border-top-color: #c1c1c1;
+  border-left-color: #c1c1c1;
+  border-right-color: #f4f4f4;
+  border-bottom-color: #f4f4f4;
+  border-style: solid; */
+  backdrop-filter: blur(2px);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+  color:#20318b;
+  padding: 1rem;;
+  margin:.5rem;
+  margin-top:2rem;
+  border-radius: 1.5rem;
+}
+
+#c1 h2{
+  padding: 1rem;
+  color: rgb(12, 67, 161);
+  font-size: 40px;
+}
+#c1 a:hover{
+  text-decoration: none;
+  color:#a826ff;
+}
 
 h2 {
   margin-bottom: 20px;
@@ -144,7 +178,10 @@ a:hover {
    5. Dashboard Specifics
    ========================================= */
 /* Styled links for testing the Vuln vs Secure routes */
-.container a[href="/admin"], .container a[href="/secure_admin"] {
+.longCon{
+  height: auto;
+}
+#c2 a[href="/admin"], .container a[href="/secure_admin"] {
     display: block;
     padding: 12px;
     margin-top: 15px;
@@ -154,28 +191,28 @@ a:hover {
     transition: all 0.2s ease;
 }
 
-.container a[href="/admin"] {
+#c2 a[href="/admin"] {
     background: #fff5f5;
     color: var(--danger);
     border: 1px solid #fed7d7;
 }
 
-.container a[href="/admin"]:hover {
+#c2 a[href="/admin"]:hover {
     background: #fed7d7;
 }
 
-.container a[href="/secure_admin"] {
+#c2 a[href="/secure_admin"] {
     background: #f0fdf4;
     color: var(--success);
     border: 1px solid #bbf7d0;
 }
 
-.container a[href="/secure_admin"]:hover {
+#c2 a[href="/secure_admin"]:hover {
     background: #bbf7d0;
 }
 
 /* Comments List */
-ul {
+.comments ul {
     text-align: left;
     background: var(--bg-color);
     padding: 15px;
@@ -184,7 +221,7 @@ ul {
     border: 1px solid var(--border-color);
 }
 
-ul li {
+.comments ul li {
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
@@ -192,7 +229,7 @@ ul li {
     line-height: 1.5;
 }
 
-ul li:last-child {
+.comments ul li:last-child {
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: none;
