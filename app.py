@@ -251,30 +251,31 @@ def logout():
 
 
 #Shahad's edits
-@app.route('/dashboard')
-@requires_roles('admin', 'user')  # Keep Leena's protection!
+@requires_roles('admin', 'user')
 def dashboard():
     try:
         db_con = create_database_connection()
         cur = db_con.cursor()
         
-        cur.execute('SELECT content FROM "COMMENT"')
+        # JOIN the COMMENT table with the USER table to get the author's name
+        cur.execute('''
+            SELECT c.content, u.username 
+            FROM "COMMENT" c 
+            JOIN "USER" u ON c.user_id = u.user_id
+        ''')
         comments = cur.fetchall()
         
         cur.close()
         db_con.close()
         
-        # Pass the username, role, and security flag so the HTML works
         return render_template('dashboard.html', 
                                user=session.get('username'), 
                                role=session.get('role'),
                                comments=comments,
                                is_secure=session.get('is_secure') 
                               )
-        
     except Exception as e:
         return f"<h1>Dashboard Crash Report:</h1><p>{e}</p>"
-
 
 @app.route('/add_comment', methods=['POST'])
 @requires_roles('admin', 'user') # Protect this route!
