@@ -16,8 +16,29 @@
         </nav>
     </header>
 
+<div class="container" style="height:auto" id="c2">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-popup-container" style="width: 100%; margin-bottom: 20px;">
+          {% for category, message in messages %}
+            <div style="
+                padding: 15px; 
+                border-radius: 12px; 
+                margin-bottom: 10px; 
+                font-weight: bold;
+                text-align: center;
+                border: 2px solid {% if category == 'danger' %}#dc3545{% else %}#198754{% endif %};
+                background-color: {% if category == 'danger' %}#f8d7da{% else %}#d1e7dd{% endif %};
+                color: {% if category == 'danger' %}#721c24{% else %}#0f5132{% endif %};
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                animation: fadeIn 0.5s ease-in-out;">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
 
-<div class="container"  style="height:auto" id="c2">
     <h2>Welcome, {{ user }}!</h2>
     <p style="color: gray; font-size: 0.9em;">Your Role: <strong>{{ role }}</strong></p>
 
@@ -39,17 +60,13 @@
     <ul class="comments" style="text-align: left; background: #eee; padding: 10px; list-style-type: none;">
         {% for comment in comments %}
             <li style="margin-bottom: 5px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
-                
                 {% if is_secure %}
                     <span style="color: green; font-size: 10px;">[Secure]</span> 
                     {{ comment[0] }}
-                    
                 {% else %}
                     <span style="color: red; font-size: 10px;">[Vulnerable]</span> 
                     {{ comment[0] | safe }}
-                    
                 {% endif %}
-
             </li>
         {% endfor %}
     </ul>
