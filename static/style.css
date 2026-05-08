@@ -74,7 +74,7 @@ body {
 }
 
 
-.container {
+/* .container {
   background-color: #ffffff6e;
   padding: 30px;
   margin: 10rem;
@@ -85,7 +85,7 @@ body {
   align-content: center;
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
   text-align: center;
-}
+} */
 
 #c1 a{
   background-color: #ffffffab;
@@ -234,3 +234,60 @@ a:hover {
     padding-bottom: 0;
     border-bottom: none;
 }
+/* Update the container to be flexible */
+.container {
+    background-color: #ffffff6e;
+    padding: 30px;
+    margin: 10rem auto; /* Added auto to center it */
+    border-radius: 3rem;
+    font-size: large;
+    width: 700px;
+    min-height: 400px; /* Use min-height instead of height */
+    height: auto;      /* Allows it to grow with comments */
+    align-content: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    backdrop-filter: blur(10px); /* Makes that glass effect look better */
+}
+
+/* Add the Comment Feed Styling */
+.comments-container {
+    text-align: left;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comment-item {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 15px;
+    border-radius: 1.5rem;
+    border: 1px solid var(--border-color);
+    
+    /* CRITICAL FIX: Ensures SQL injection strings don't break your box */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word; 
+}
+
+.comment-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 4px;
+}
+
+.badge {
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-right: 5px;
+}
+
+.vuln-badge { background: #fee2e2; color: var(--danger); }
+.secure-badge { background: #dcfce7; color: var(--success); }
