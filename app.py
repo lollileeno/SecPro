@@ -267,10 +267,14 @@ def dashboard():
         
         # JOIN the COMMENT table with the USER table to get the author's name
         cur.execute('''
-            SELECT c.content, u.username, c.is_secure, c.timestamp
+            SELECT 
+                c.content, 
+                u.username, 
+                c.is_secure, 
+                TO_CHAR(c.timestamp, 'YYYY-MM-DD HH12:MI AM') as formatted_time
             FROM "COMMENT" c 
             JOIN "USER" u ON c.user_id = u.user_id
-            ORDER BY c.timestamp
+            ORDER BY c.timestamp DESC
         ''')
         comments = cur.fetchall()
         
