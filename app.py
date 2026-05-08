@@ -202,7 +202,39 @@ def admin():
 def secure_admin():
     return render_template('secure_admin.html')
 
+@app.route('/delete_comment/<int:comment_id>', methods=['POST'])
+@requires_roles('admin')
+def delete_comment(comment_id):
+    db_con = create_database_connection()
+    cur = db_con.cursor()
+    try:
+        # Parameterized query to prevent SQL injection
+        cur.execute('DELETE FROM "COMMENT" WHERE comment_id = %s', (comment_id,))
+        db_con.commit()
+        flash('Comment deleted successfully.', 'success')
+    except Exception as e:
+        flash(f'Error deleting comment: {e}', 'danger')
+    finally:
+        cur.close()
+        db_con.close()
+    return redirect(url_for('secure_admin'))
 
+@app.route('/edit_comment/<int:comment_id>', methods=['POST'])
+@requires_roles('admin')
+def edit_comment(comment_id):
+    new_content = request.form.get('content')
+    db_con = create_database_connection()
+    cur = db_con.cursor()
+    try:
+        cur.execute('UPDATE "COMMENT" SET content = %s WHERE comment_id = %s', (new_content, comment_id))
+        db_con.commit()
+        flash('Comment updated successfully.', 'success')
+    except Exception as e:
+        flash(f'Error updating comment: {e}', 'danger')
+    finally:
+        cur.close()
+        db_con.close()
+    return redirect(url_for('secure_admin'))
 # Added a logout route to help you test different users easily, Leena
 @app.route('/logout')
 def logout():
