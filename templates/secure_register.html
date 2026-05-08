@@ -3,21 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Secure Register</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" type="image/x-icon" href="https://static.vecteezy.com/system/resources/thumbnails/071/184/913/small/shield-gray-icon-border-layer-shape-protection-security-defense-emblem-symbol-bold-outline-minimalism-png.png">
 </head>
 <body>
 
-<div class="nav">
-    <a href="/">Home</a>
-    <a href="/register">Vulnerable</a>
-</div>
+<header>
+         <nav>
+            <ul>
+            <li><a href="/"> Home </a></li>
+            <li><a href="/register"> Vulnerable register </a></li>
+            <li><a href="/secure_register"> Secure register </a></li>
+            </ul>
+        </nav>
+    </header>
 
-<div class="container">
+
+<div class="container" style="height:auto">
     <h2 style="color:green;">Secure Register</h2>
-
+  {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-popup-container" style="width: 100%; margin-bottom: 20px;">
+          {% for category, message in messages %}
+            <div style="
+                padding: 15px; 
+                border-radius: 12px; 
+                margin-bottom: 10px; 
+                font-weight: bold;
+                text-align: center;
+                border: 2px solid {% if category == 'danger' %}#dc3545{% else %}#198754{% endif %};
+                background-color: {% if category == 'danger' %}#f8d7da{% else %}#d1e7dd{% endif %};
+                color: {% if category == 'danger' %}#721c24{% else %}#0f5132{% endif %};
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                animation: fadeIn 0.5s ease-in-out;">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
     <form method="POST" action="/secure_register">
         <input type="text" name="username" placeholder="Username" required>
-        <input type="text" name="password" placeholder="Password" required>
+        <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Register Secure</button>
     </form>
 </div>
