@@ -162,14 +162,25 @@ def register():
 
     return render_template('register.html')
 
-
 @app.route('/secure_register', methods=['GET', 'POST'])
 def secure_register():
     if request.method == 'POST':
         username = request.form["username"]
         password = request.form["password"]
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
+        db_con = create_database_connection()
+        cur = db_con.cursor()
+
+        # 1. Check if username already exists first!
+        cur.execute('SELECT username FROM "USER" WHERE username = %s', (username,))
+        if cur.fetchone():
+            flash('That username is already taken. Please choose another.', 'danger')
+            cur.close()
+            db_con.close()
+            return render_template('secure_register.html')
+
+        # 2. If it doesn't exist, proceed with hashing and insertion
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         # Parameterized Query + default 'user' role, Leena
         sql = "INSERT INTO \"USER\" (username, password, role) VALUES (%s, %s, %s)"
         info = (username, hashed_password, 'user')
