@@ -2,5 +2,3 @@ Flask
 psycopg2-binary
 bcrypt
 gunicorn
-python-dotenv
-werkzeug
