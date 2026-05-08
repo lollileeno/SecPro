@@ -260,7 +260,7 @@ def dashboard():
         
         # JOIN the COMMENT table with the USER table to get the author's name
         cur.execute('''
-            SELECT c.content, u.username 
+            SELECT c.content, u.username, c.is_secure
             FROM "COMMENT" c 
             JOIN "USER" u ON c.user_id = u.user_id
         ''')
@@ -298,7 +298,7 @@ def add_comment():
             
             # Insert the comment with the correct user_id
             sql = 'INSERT INTO "COMMENT" (content, user_id, is_secure) VALUES (%s, %s, %s)'
-            cur.execute(sql, (content, user_id, ))
+            cur.execute(sql, (content, user_id, secure))
             db_con.commit()
         
         cur.close()
