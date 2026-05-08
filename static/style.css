@@ -62,7 +62,7 @@ nav a:hover{
 body {
   background: #f4f6f9;
   display: grid;
-  padding:2rem;
+  padding:25rem;
   justify-content: center;
   align-items: center;
   height: 100vh;
