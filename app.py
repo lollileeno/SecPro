@@ -126,9 +126,7 @@ def secure_login():
             return render_template('secure_login.html')
 
         # Limit input length to prevent Buffer Overflow or DoS attempts
-        if len(username) > 20 or len(password) > 100:
-            flash('Invalid input length.', 'danger')
-            return render_template('secure_login.html')
+       
 
         db_con = create_database_connection()
         cur = db_con.cursor()
