@@ -62,7 +62,6 @@ nav a:hover{
 body {
   background: #f4f6f9;
   display: grid;
-  padding:2rem;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -74,6 +73,10 @@ body {
 
 }
 
+body a[href=dashboard] {
+    padding:2rem;
+
+}
 
 /* .container {
   background-color: #ffffff6e;
