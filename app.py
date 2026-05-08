@@ -238,8 +238,51 @@ def secure_register():
 
 @app.route('/admin')
 def admin():
-    # Vulnerable route: No access control here!
-    return render_template('admin.html')
+    # Vulnerable: No @requires_roles decorator!
+    db_con = create_database_connection()
+    cur = db_con.cursor()
+    # Fetching comments without any permission check
+    cur.execute('SELECT comment_id, content FROM "COMMENT"')
+    comments = cur.fetchall()
+    cur.close()
+    db_con.close()
+    return render_template('admin.html', comments=comments)
+
+@app.route('/vulnerable_delete/<int:comment_id>', methods=['POST'])
+def vulnerable_delete(comment_id):
+    # Vulnerable: No access control AND vulnerable to SQLi
+    db_con = create_database_connection()
+    cur = db_con.cursor()
+    try:
+        # Dangerous: Using f-string for a DELETE command
+        sql = f"DELETE FROM \"COMMENT\" WHERE comment_id = {comment_id}"
+        cur.execute(sql)
+        db_con.commit()
+        flash('Comment deleted (Vulnerably)!', 'success')
+    except Exception as e:
+        flash(f'Error: {e}', 'danger')
+    finally:
+        cur.close()
+        db_con.close()
+    return redirect(url_for('admin'))
+
+@app.route('/vulnerable_edit/<int:comment_id>', methods=['POST'])
+def vulnerable_edit(comment_id):
+    new_content = request.form.get('content')
+    db_con = create_database_connection()
+    cur = db_con.cursor()
+    try:
+        # Dangerous: Direct string insertion
+        sql = f"UPDATE \"COMMENT\" SET content = '{new_content}' WHERE comment_id = {comment_id}"
+        cur.execute(sql)
+        db_con.commit()
+        flash('Comment updated (Vulnerably)!', 'success')
+    except Exception as e:
+        flash(f'Error: {e}', 'danger')
+    finally:
+        cur.close()
+        db_con.close()
+    return redirect(url_for('admin'))
 
 
 @app.route('/secure_admin')
