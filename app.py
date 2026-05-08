@@ -6,7 +6,7 @@ import hashlib
 from functools import wraps
 from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
-
+from datetime import datetime, timezone
 
 load_dotenv() # Load environment variables from .env file
 
@@ -267,9 +267,10 @@ def dashboard():
         
         # JOIN the COMMENT table with the USER table to get the author's name
         cur.execute('''
-            SELECT c.content, u.username, c.is_secure
+            SELECT c.content, u.username, c.is_secure, c.timestamp
             FROM "COMMENT" c 
             JOIN "USER" u ON c.user_id = u.user_id
+            ORDER BY c.timestamp
         ''')
         comments = cur.fetchall()
         
@@ -292,6 +293,7 @@ def add_comment():
         content = request.form['content']
         username = session.get('username')
         secure= session.get('is_secure')
+        time= datetime.now(timezone.utc)
         
         db_con = create_database_connection()
         cur = db_con.cursor()
