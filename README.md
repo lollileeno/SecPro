@@ -228,7 +228,7 @@ This project demonstrates how common web vulnerabilities can be intentionally in
 
 ---
 
-## **Contribiutors:**
+## **Contributors:**
 
 **Leena Alonayq - Ghaida Alzaidan - Almaha Alaiban - Shahad Aldamegh - Eman Ameen**
 
