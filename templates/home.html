@@ -9,14 +9,18 @@
 <body id="homeBody">
 
 <header>
-         <nav>
-            <ul>
-            <li><a href="/" > Home </a></li>
-            <li><a href="/login"> Vulnerable login </a></li>
-            <li><a href="/secure_login"> Secure login </a></li>
-            </ul>
-        </nav>
-    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            {% if session.get('username') %}
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/login">Vulnerable login</a></li>
+                <li><a href="/secure_login">Secure login</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
 
 <main class="container" id="c1">
     <h2>Secure Web Application</h2>
