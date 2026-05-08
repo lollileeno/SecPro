@@ -18,10 +18,10 @@ Features
 
 ---
 
-## 2. Vulnerabilities Identified
+## 2. How to Run 
 
-### Misconfigured Proxy Trust
-Although HTTPS is enforced by the cloud provider, the Flask backend was not configured to trust reverse proxy headers.
+**Open The URL**
+https://security-project-g5.onrender.com
 
 **Impact:**
 * Application may incorrectly assume an insecure HTTP environment.
