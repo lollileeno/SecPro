@@ -46,9 +46,20 @@
     <hr style="margin: 20px 0;">
     
     <h3>Test Access Control:</h3>
-    <a href="/admin" style="background-color: #ffcccc; color: #cc0000; border: 1px solid #cc0000;">1. Vulnerable Admin (No Protection)</a>
-    <a href="/secure_admin" style="background-color: #ccffcc; color: #006600; border: 1px solid #006600;">2. Secure Admin (Protected)</a>
+{% if is_secure %}
+    {% if session.get('role') == 'admin' %}
+        <a href="/secure_admin" class="btn-admin secure">
+            Administration Page
+        </a>
+    {% else %}
+        <p style="color: gray; font-size: 0.9em;">Admin panel restricted to administrators.</p>
+    {% endif %}
 
+{% else %}
+    <a href="/admin" class="btn-admin vulnerable">
+       Administration Page
+    </a>
+{% endif %}
     <hr style="margin: 20px 0;">
     <h3>Leave a Comment</h3>
     <form method="POST" action="/add_comment">
