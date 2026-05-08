@@ -215,10 +215,16 @@ If vulnerable, a popup alert will appear.
   * Can access `/secure_admin`
   * Can delete and edit comments
 
-* **Normal/vulnerable users:**
+* **Vulnerable users:**
 
   * Can access comment system freely
-  * Cannot access secure admin panel
+  * They Dont have an access control which allows them to access normal admin panel By Administration Page Button
+
+* **Normal "Secure" users:**
+
+  * Can access comment system freely
+  * They have an access control which Prevent them to access normal admin panel By Administration Page Button
+    
 
 This demonstrates RBAC enforcement.
 
