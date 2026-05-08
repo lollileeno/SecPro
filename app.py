@@ -240,7 +240,7 @@ def secure_register():
 def admin():
     if 'username' not in session:
         flash('Unauthorized! Please log in first to access the admin panel.', 'unauthorized')
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     # Vulnerable: No @requires_roles decorator!
     db_con = create_database_connection()
     cur = db_con.cursor()
@@ -291,6 +291,9 @@ def vulnerable_edit(comment_id):
 @app.route('/secure_admin')
 @requires_roles('admin')
 def secure_admin():
+     if 'username' not in session:
+        flash('Unauthorized! Please log in first to access the admin panel.', 'unauthorized')
+        return redirect(url_for('home'))
     db_con = create_database_connection()
     cur = db_con.cursor()
     # Fetching ID and Content so we know which one to delete
@@ -352,6 +355,9 @@ def logout():
 @app.route('/dashboard')
 @requires_roles('admin', 'user')
 def dashboard():
+     if 'username' not in session:
+        flash('Unauthorized! Please log in first to access the Dashboard.', 'unauthorized')
+        return redirect(url_for('home'))
     try:
         db_con = create_database_connection()
         cur = db_con.cursor()
