@@ -198,9 +198,16 @@ def admin():
 
 
 @app.route('/secure_admin')
-@requires_roles('admin')  # Protect this route for admins only, Leena
+@requires_roles('admin')
 def secure_admin():
-    return render_template('secure_admin.html')
+    db_con = create_database_connection()
+    cur = db_con.cursor()
+    # Fetching ID and Content so we know which one to delete
+    cur.execute('SELECT comment_id, content FROM "COMMENT"')
+    comments = cur.fetchall()
+    cur.close()
+    db_con.close()
+    return render_template('secure_admin.html', comments=comments)
 
 @app.route('/delete_comment/<int:comment_id>', methods=['POST'])
 @requires_roles('admin')
