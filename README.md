@@ -1,4 +1,3 @@
-Here is your **complete report with the new sections added and properly integrated**:
 
 ---
 
@@ -127,14 +126,14 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 ---
 
-## **3.Challenges and Solutions
+## **3.Challenges and Solutions**
 
 We faced an issue where sessions stayed active even after switching users.
 Fix: Used session.clear() and manually deleted cookies on logout to fully reset sessions.
 
 ---
 
-## **4.Code Explanation
+## **4.Code Explanation**
 * bcrypt: chosen for secure password hashing with salting
 * Parameterized queries: prevent SQL injection
 * RBAC decorator: controls access based on user roles
