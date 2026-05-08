@@ -359,7 +359,7 @@ def dashboard():
             c.content, 
             u.username, 
             c.is_secure, 
-            TO_CHAR(c.timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Riyadh', 'YYYY-MM-DD HH12:MI AM') as formatted_time
+            TO_CHAR(c.timestamp AT TIME ZONE 'Asia/Riyadh', 'YYYY-MM-DD HH12:MI AM')
         FROM "COMMENT" c 
         JOIN "USER" u ON c.user_id = u.user_id
         ORDER BY c.timestamp DESC
