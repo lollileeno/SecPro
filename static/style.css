@@ -63,8 +63,8 @@ body {
   background: #f4f6f9;
   display: grid;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: start;
+  min-height: 100vh;
   background-image: linear-gradient(to right top, #ffffff, #f9f9ff, #f3f4ff, #ebefff, #e2eaff, #d6e4ff, #c8deff, #b9d8ff, #a1d0ff, #83c8ff, #5dc0ff, #05b9ff);
   background-repeat: no-repeat; 
   background-size: cover;     
