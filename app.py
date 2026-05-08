@@ -8,6 +8,22 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
 from datetime import datetime, timezone
 
+import re
+
+def is_valid_input(username, password):
+    # Username: 3-20 chars, only letters, numbers, and underscores
+    # This prevents payloads like ' OR '1'='1
+    username_regex = r"^[a-zA-Z0-9_]{3,20}$"
+    
+    if not re.match(username_regex, username):
+        return False, "Username must be 3-20 characters and contain only letters, numbers, or underscores."
+    
+    if len(password) < 6:
+        return False, "Password must be at least 6 characters long."
+        
+    return True, ""
+
+
 load_dotenv() # Load environment variables from .env file
 
 app = Flask(__name__)
@@ -98,19 +114,25 @@ def login():
 @app.route('/secure_login', methods=['POST', 'GET'])
 def secure_login():
     if request.method == 'POST':
-        username = request.form["username"]
+        username = request.form["username"].strip()
         password = request.form["password"]
 
-        # Secure query (Parameterized) to fetch password and role, Leena
-        sql = "SELECT password, role FROM \"USER\" WHERE username= %s"
+        # Quick validation check
+        if not username or not password:
+            flash('Username and password are required.', 'danger')
+            return render_template('secure_login.html')
+
+        # Limit input length to prevent Buffer Overflow or DoS attempts
+        if len(username) > 20 or len(password) > 100:
+            flash('Invalid input length.', 'danger')
+            return render_template('secure_login.html')
 
         db_con = create_database_connection()
         cur = db_con.cursor()
+        
+        # Parameterized query remains your strongest SQLi defense
+        sql = "SELECT password, role FROM \"USER\" WHERE username= %s"
         cur.execute(sql, (username,))
-        user_data = cur.fetchone()
-
-        cur.close()
-        db_con.close()
 
         # user_data[0] is password, user_data[1] is role
         try:
@@ -144,7 +166,18 @@ def register():
         db_con = create_database_connection()
         cur = db_con.cursor()
 
-        # Vulnerable SQL Injection + default 'user' role
+        # 1. Vulnerable Check: Using f-string (Susceptible to SQL Injection)
+        # This keeps the 'vulnerable' theme of this route
+        check_sql = f"SELECT username FROM \"USER\" WHERE username = '{username}'"
+        cur.execute(check_sql)
+        
+        if cur.fetchone():
+            flash('That username is already taken. Please choose another.', 'danger')
+            cur.close()
+            db_con.close()
+            return render_template('register.html')
+
+        # 2. Proceed with Vulnerable Insertion if user doesn't exist
         sql_query = f"INSERT INTO \"USER\" (username, password) VALUES ('{username}', '{md5hash_password}')"
 
         try:
@@ -153,8 +186,7 @@ def register():
             flash('Account created successfully!', 'success')
             return redirect(url_for('login'))
         except Exception as e:
-            print(e)
-            flash(f"Registeration failed: {e}", 'danger')
+            flash(f"Registration failed: {e}", 'danger')
             return render_template('register.html')
         finally:
             cur.close()
@@ -162,14 +194,31 @@ def register():
 
     return render_template('register.html')
 
-
 @app.route('/secure_register', methods=['GET', 'POST'])
 def secure_register():
     if request.method == 'POST':
-        username = request.form["username"]
+        username = request.form["username"].strip()
         password = request.form["password"]
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
+        # Character and Length Validation
+        is_valid, error_message = is_valid_input(username, password)
+        if not is_valid:
+            flash(error_message, 'danger')
+            return render_template('secure_register.html')
+
+        db_con = create_database_connection()
+        cur = db_con.cursor()
+
+        # Check for existing user
+        cur.execute('SELECT username FROM "USER" WHERE username = %s', (username,))
+        if cur.fetchone():
+            flash('That username is already taken.', 'danger')
+            cur.close()
+            db_con.close()
+            return render_template('secure_register.html')
+
+        # Proceed with secure hashing
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         # Parameterized Query + default 'user' role, Leena
         sql = "INSERT INTO \"USER\" (username, password, role) VALUES (%s, %s, %s)"
         info = (username, hashed_password, 'user')
