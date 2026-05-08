@@ -238,6 +238,9 @@ def secure_register():
 
 @app.route('/admin')
 def admin():
+    if 'username' not in session:
+        flash('Unauthorized! Please log in first to access the admin panel.', 'danger')
+        return redirect(url_for('login'))
     # Vulnerable: No @requires_roles decorator!
     db_con = create_database_connection()
     cur = db_con.cursor()
