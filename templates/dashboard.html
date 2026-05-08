@@ -66,10 +66,10 @@
                 </div>
                 <div class="comment-body">
                     {% if comment[2] %}
-                        <span class="badge secure-badge">SECURE</span>
+                        <span class="badge secure-badge">SECURE ACCOUNT</span>
                         {{ comment[0] }}
                     {% else %}
-                        <span class="badge vuln-badge">VULNERABLE</span>
+                        <span class="badge vuln-badge">VULNERABLE ACCOUNT</span>
                         {{ comment[0] | safe }}
                     {% endif %}
                 </div>
