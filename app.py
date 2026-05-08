@@ -293,7 +293,6 @@ def add_comment():
         content = request.form['content']
         username = session.get('username')
         secure= session.get('is_secure')
-        time= datetime.now(timezone.utc)
         
         db_con = create_database_connection()
         cur = db_con.cursor()
@@ -306,7 +305,7 @@ def add_comment():
             user_id = user_data[0]
             
             # Insert the comment with the correct user_id
-            sql = 'INSERT INTO "COMMENT" (content, user_id, is_secure) VALUES (%s, %s, %s)'
+            sql = 'INSERT INTO "COMMENT" (content, user_id, is_secure, timestamp) VALUES (%s, %s, %s, CURRENT_TIMESTAMP)'
             cur.execute(sql, (content, user_id, secure))
             db_con.commit()
         
