@@ -250,7 +250,7 @@ a:hover {
     backdrop-filter: blur(10px); /* Makes that glass effect look better */
 }
 div#c2 {
-    margin:20rem;
+    margin-top:20rem;
 }
 
 /* Add the Comment Feed Styling */
