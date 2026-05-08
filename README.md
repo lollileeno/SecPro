@@ -164,7 +164,7 @@ To run and access the application, follow these steps:
    * Admin users will gain access to the control panel if logged in through the secure path.
 
 **Important Note:**
-Each login path (secure and vulnerable) uses separate authentication logic and session handling. This means that an account created or used in one path will not automatically work in the other. Additionally, logging in as an admin grants access to the secure control panel where administrative actions are available.
+Each login path (secure or vulnerable) uses separate authentication logic and session handling. This means that an account created or used in one path will not automatically work in the other. Additionally, logging in as an admin grants access to the secure control panel where administrative actions are available.
 
 ---
 
@@ -192,10 +192,12 @@ This bypasses authentication and logs the user in as an admin.
 
 ### **2. Cross-Site Scripting (XSS) Testing**
 
+##### The comments section is always protected from sql injection but in vulnerable edition is proned to XSS threat
+
 To test XSS:
 
 1. Log in using the vulnerable login path
-2. Go to the comments section
+2. Go to the comments section 
 3. Enter:
 
 ```html
