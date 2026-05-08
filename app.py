@@ -251,6 +251,7 @@ def logout():
 
 
 #Shahad's edits
+@app.route('/dashboard')
 @requires_roles('admin', 'user')
 def dashboard():
     try:
