@@ -1,4 +1,4 @@
-# 🔐 Security Report: Encryption & Secure Transmission
+# 🔐 A Security Demonstration Application
 
 ## 1. Introduction
 
