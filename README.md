@@ -20,24 +20,28 @@ Features
 
 ## 2. How to Run 
 
-**Open The URL**
+# Get Started! - To access the live application, open your browser and navigate to:
 https://security-project-g5.onrender.com
 
-**Impact:**
-* Application may incorrectly assume an insecure HTTP environment.
-* Improper handling of request security metadata.
-* Potential misinterpretation of HTTPS status.
+# Exploring the Two Paths
 
-### Insecure Session Cookies
-**Issues Identified:**
-* Session cookies lacked the `Secure` attribute.
-* Session cookies lacked the `SameSite` attribute.
-* Increased risk of CSRF and session interception.
+The application is divided into two distinct versions to demonstrate the "Before and After" of security implementation.
 
-**Impact:**
-* Session tokens could be exposed over insecure connections.
-* Cookies could be used in cross-site requests.
-* Increased vulnerability to session hijacking.
+# A. The Vulnerable Path (Red Labels)
+
+Vulnerable Login/Register: Uses insecure MD5 hashing and is susceptible to SQL Injection.
+
+Vulnerable Admin: A page with no access control; anyone can view it if they know the URL.
+
+Vulnerable Dashboard: Displays comments using the | safe filter, allowing for Reflected XSS attacks.
+
+# B. The Secure Path (Green Labels)
+
+Secure Login/Register: Uses Bcrypt for password salting and Parameterized Queries to block SQL Injection.
+
+Secure Admin: Protected by Role-Based Access Control (RBAC); only accounts with the 'admin' role can enter.
+
+Secure Dashboard: Automatically escapes HTML tags in comments to prevent XSS.
 
 ---
 
