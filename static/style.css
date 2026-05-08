@@ -242,16 +242,15 @@ a:hover {
 .container {
     background-color: #ffffff6e;
     padding: 30px;
-    margin: 10rem auto; /* Added auto to center it */
     border-radius: 3rem;
     font-size: large;
     width: 700px;
-    min-height: 400px; /* Use min-height instead of height */
-    height: auto;      /* Allows it to grow with comments */
+    min-height: 400px; 
+    height: auto;      
     align-content: center;
     box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     text-align: center;
-    backdrop-filter: blur(10px); /* Makes that glass effect look better */
+    backdrop-filter: blur(10px); 
 }
 /* div#c2 {
     margin-top:23rem;
