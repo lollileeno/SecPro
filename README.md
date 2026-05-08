@@ -1,7 +1,7 @@
 
 ---
 
-# **Security Vulnerabilities and Mitigation Report**
+# **CSC429 - Security Vulnerabilities and Mitigation Report**
 
 ## **1. Introduction of the Project**
 
