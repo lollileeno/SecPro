@@ -126,14 +126,14 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 ---
 
-## **3.Challenges and Solutions**
+## **3. Challenges and Solutions**
 
 We faced an issue where sessions stayed active even after switching users.
 Fix: Used session.clear() and manually deleted cookies on logout to fully reset sessions.
 
 ---
 
-## **4.Code Explanation**
+## **4. Code Explanation**
 * bcrypt: chosen for secure password hashing with salting
 * Parameterized queries: prevent SQL injection
 * RBAC decorator: controls access based on user roles
@@ -146,7 +146,7 @@ Fix: Used session.clear() and manually deleted cookies on logout to fully reset 
 
 To run and access the application, follow these steps:
 
-1. Open the website link in your browser.
+1. Open the given website link https://security-project-g5.onrender.com in your browser.
 2. You will be given two login paths:
 
    * **Secure Login**
@@ -156,7 +156,7 @@ To run and access the application, follow these steps:
    * **Admin (Secure Path) Test Credentials:**
 
      * Username: **Lama**
-     * Password: **123**
+     * Password: **1234567**
    * Alternatively, you can create a new account using the **“Create Account”** option.
 4. After logging in:
 
@@ -225,3 +225,11 @@ This demonstrates RBAC enforcement.
 ## **Conclusion**
 
 This project demonstrates how common web vulnerabilities can be intentionally introduced and then effectively mitigated using secure coding practices. The final implementation follows industry standards for authentication, authorization, encryption, and input handling, significantly improving the overall security of the application.
+
+---
+
+## **Contribiutors:**
+
+**Leena Alonayq - Ghaida Alzaidan - Almaha Alaiban - Shahad Aldamegh - Eman Ameen**
+
+
