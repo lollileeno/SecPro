@@ -1,8 +1,20 @@
 # 🔐 Security Report: Encryption & Secure Transmission
 
-## 1. Executive Summary
+## 1. Introduction
 
-This report outlines the findings from a security review of the application's encryption and session management. While the hosting provider (Render) enforces HTTPS at the edge, the Flask application required additional configuration to correctly handle proxy headers and secure session cookies.
+This project is a Security Demonstration Application built with Flask and PostgreSQL. It is designed to showcase common web vulnerabilities and the modern defensive programming techniques used to mitigate them. The app features two distinct paths: a Vulnerable Version (demonstrating weak security) and a Secure Version (demonstrating hardened defenses).
+
+Features
+
+* Authentication: Contrast between weak MD5 hashing and secure Bcrypt salting.
+
+* Database Security: Demonstration of SQL Injection vs. Parameterized Queries.
+
+* Access Control: Implementation of Role-Based Access Control (RBAC) using custom decorators.
+
+* Session Management: Hardened session cookies (HttpOnly, Secure, SameSite) and session fixation protection.
+
+* XSS Protection: Controlled demonstration of reflected XSS vs. automatic template escaping.
 
 ---
 
