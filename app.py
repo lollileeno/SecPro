@@ -117,31 +117,27 @@ def secure_login():
         username = request.form["username"].strip()
         password = request.form["password"]
         
-    is_valid, error_message = is_valid_input(username, password)
-    if not is_valid:
-        flash(error_message, 'danger')
-    # Quick validation check
-    if not username or not password:
-        flash('Username and password are required.', 'danger')
-        return render_template('secure_login.html')
-
-    # Limit input length to prevent Buffer Overflow or DoS attempts
-    
+        # 1. Validation Check
+        is_valid, error_message = is_valid_input(username, password)
+        if not is_valid:
+            flash(error_message, 'danger')
+            return render_template('secure_login.html')
 
         db_con = create_database_connection()
         cur = db_con.cursor()
         
-        # Parameterized query remains your strongest SQLi defense
+        # 2. Execute and FETCH the data
         sql = "SELECT password, role FROM \"USER\" WHERE username= %s"
         cur.execute(sql, (username,))
+        user_data = cur.fetchone()  # CRITICAL: This was missing
 
-        # user_data[0] is password, user_data[1] is role
+        cur.close()
+        db_con.close()
+
+        # 3. Verify password
         try:
             if user_data and bcrypt.checkpw(password.encode('utf-8'), user_data[0].encode('utf-8')):
-
-                session.clear() #prevents session fixation attacks
-
-                # Set the session variables upon successful login
+                session.clear() 
                 session['username'] = username
                 session['role'] = user_data[1]
                 session['is_secure'] = True
@@ -149,9 +145,8 @@ def secure_login():
             else:
                 flash('Invalid username or password!', 'danger')
                 return render_template('secure_login.html')
-        except ValueError:
-            # Prevent crash if MD5 hash is checked by Bcrypt
-            flash('Invalid username or password! (Hash mismatch)', 'danger')
+        except Exception:
+            flash('Invalid username or password! (Security Error)', 'danger')
             return render_template('secure_login.html')
 
     return render_template('secure_login.html')
