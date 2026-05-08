@@ -62,7 +62,7 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 Use the following credentials to log in as admin to verify the secure configuration:
 
 * **Username:** `Lama`
-* **Password:** `0123`
+* **Password:** `123`
 
 ## 5. Conclusion
 
