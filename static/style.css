@@ -297,3 +297,28 @@ a:hover {
 
 .vuln-badge { background: #fee2e2; color: var(--danger); }
 .secure-badge { background: #dcfce7; color: var(--success); }
+
+.btn-admin {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+
+.btn-admin:hover {
+    transform: scale(1.05);
+}
+
+.secure {
+    background-color: #ccffcc;
+    color: #006600;
+    border: 2px solid #006600;
+}
+
+.vulnerable {
+    background-color: #ffcccc;
+    color: #cc0000;
+    border: 2px solid #cc0000;
+}
