@@ -6,7 +6,7 @@ import hashlib
 from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = 'hvjgi'  # Add this line
+app.secret_key = 'hvjgi'  # TODO: why plaintext? afaik it should be in an .env file
 
 
 def create_database_connection():
