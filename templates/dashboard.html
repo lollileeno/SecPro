@@ -18,6 +18,38 @@
     </header>
 
 <div class="container" id="c2">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-popup-container" style="width: 100%; margin-bottom: 20px;">
+          {% for category, message in messages %}
+            <div style="
+                padding: 15px; 
+                border-radius: 12px; 
+                margin-bottom: 10px; 
+                font-weight: bold;
+                text-align: center;
+                border: 2px solid {% if category == 'danger' %}#dc3545{% else %}#198754{% endif %};
+                background-color: {% if category == 'danger' %}#f8d7da{% else %}#d1e7dd{% endif %};
+                color: {% if category == 'danger' %}#721c24{% else %}#0f5132{% endif %};
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                animation: fadeIn 0.5s ease-in-out;">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <h2>Welcome, {{ user }}!</h2>
+    <p style="color: gray; font-size: 0.9em;">Your Role: <strong>{{ role }}</strong></p>
+
+    <hr style="margin: 20px 0;">
+    
+    <h3>Test Access Control:</h3>
+    <a href="/admin" style="background-color: #ffcccc; color: #cc0000; border: 1px solid #cc0000;">1. Vulnerable Admin (No Protection)</a>
+    <a href="/secure_admin" style="background-color: #ccffcc; color: #006600; border: 1px solid #006600;">2. Secure Admin (Protected)</a>
+
+    <hr style="margin: 20px 0;">
     <h3>Leave a Comment</h3>
     <form method="POST" action="/add_comment">
         <textarea name="content" placeholder="Enter payload or comment..." required></textarea>
