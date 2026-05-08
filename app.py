@@ -4,15 +4,37 @@ import psycopg2
 import bcrypt  # For secure password storage
 import hashlib
 from functools import wraps
+from werkzeug.middleware.proxy_fix import ProxyFix
+from dotenv import load_dotenv
+
+
+load_dotenv() # Load environment variables from .env file
 
 app = Flask(__name__)
-app.secret_key = 'hvjgi'  # Add this line
+app.secret_key = os.environ.get('SECRET_KEY')
 
+# 1. Secure Session Cookies
+app.config['SESSION_COOKIE_SECURE'] = True    # Ensures the session cookie is ONLY sent over HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # Prevents JavaScript from reading the token (Mitigates XSS)
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax' # Prevents the token from being sent in cross-site requests (Mitigates CSRF)
+
+
+# 2. HTTPS/TLS was enabled through the hosting provider to encrypt communication between the client and server since site URL begins with: "https://" then TLS is already active. 
+
+# 3. ProxyFix is used to ensure that Flask correctly identifies the original request's protocol and host when behind a reverse proxy (like Gunicorn or Nginx), which is essential for enforcing HTTPS and generating correct URLs.
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 def create_database_connection():
     return psycopg2.connect(os.environ.get('DATABASE_URL'))
 
-
+# 4. Enforce HTTPS for all routes
+@app.before_request
+def enforce_https():
+    # Redirect HTTP requests to HTTPS
+    if not request.is_secure:
+        url = request.url.replace('http://', 'https://', 1)
+        return redirect(url, code=301)
+    
 # Leena: RBAC Decorator Definition
 # Leena: RBAC Decorator Definition
 def requires_roles(*roles):
@@ -97,6 +119,9 @@ def secure_login():
         # user_data[0] is password, user_data[1] is role
         try:
             if user_data and bcrypt.checkpw(password.encode('utf-8'), user_data[0].encode('utf-8')):
+
+                session.clear() #prevents session fixation attacks
+
                 # Set the session variables upon successful login
                 session['username'] = username
                 session['role'] = user_data[1]
@@ -247,4 +272,4 @@ def add_comment():
         return f"<h1>Add Comment Crash Report:</h1><p>{e}</p>"
         
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
