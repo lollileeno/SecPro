@@ -291,17 +291,18 @@ def vulnerable_edit(comment_id):
 @app.route('/secure_admin')
 @requires_roles('admin')
 def secure_admin():
-     if 'username' not in session:
+    if 'username' not in session:
         flash('Unauthorized! Please log in first to access the admin panel.', 'unauthorized')
         return redirect(url_for('home'))
-    db_con = create_database_connection()
-    cur = db_con.cursor()
-    # Fetching ID and Content so we know which one to delete
-    cur.execute('SELECT comment_id, content FROM "COMMENT"')
-    comments = cur.fetchall()
-    cur.close()
-    db_con.close()
-    return render_template('secure_admin.html', comments=comments)
+    else:
+        db_con = create_database_connection()
+        cur = db_con.cursor()
+        # Fetching ID and Content so we know which one to delete
+        cur.execute('SELECT comment_id, content FROM "COMMENT"')
+        comments = cur.fetchall()
+        cur.close()
+        db_con.close()
+        return render_template('secure_admin.html', comments=comments)
 
 @app.route('/delete_comment/<int:comment_id>', methods=['POST'])
 @requires_roles('admin')
@@ -355,37 +356,38 @@ def logout():
 @app.route('/dashboard')
 @requires_roles('admin', 'user')
 def dashboard():
-     if 'username' not in session:
+    if 'username' not in session:
         flash('Unauthorized! Please log in first to access the Dashboard.', 'unauthorized')
         return redirect(url_for('home'))
-    try:
-        db_con = create_database_connection()
-        cur = db_con.cursor()
-        
-        # JOIN the COMMENT table with the USER table to get the author's name
-        cur.execute('''
-        SELECT 
-            c.content, 
-            u.username, 
-            c.is_secure, 
-            TO_CHAR(c.timestamp AT TIME ZONE 'Asia/Riyadh', 'YYYY-MM-DD HH12:MI AM')
-        FROM "COMMENT" c 
-        JOIN "USER" u ON c.user_id = u.user_id
-        ORDER BY c.timestamp DESC
-    ''')
-        comments = cur.fetchall()
-        
-        cur.close()
-        db_con.close()
-        
-        return render_template('dashboard.html', 
-                               user=session.get('username'), 
-                               role=session.get('role'),
-                               comments=comments,
-                               is_secure=session.get('is_secure') 
-                              )
-    except Exception as e:
-        return f"<h1>Dashboard Crash Report:</h1><p>{e}</p>"
+    else:
+        try:
+            db_con = create_database_connection()
+            cur = db_con.cursor()
+            
+            # JOIN the COMMENT table with the USER table to get the author's name
+            cur.execute('''
+            SELECT 
+                c.content, 
+                u.username, 
+                c.is_secure, 
+                TO_CHAR(c.timestamp AT TIME ZONE 'Asia/Riyadh', 'YYYY-MM-DD HH12:MI AM')
+            FROM "COMMENT" c 
+            JOIN "USER" u ON c.user_id = u.user_id
+            ORDER BY c.timestamp DESC
+        ''')
+            comments = cur.fetchall()
+            
+            cur.close()
+            db_con.close()
+            
+            return render_template('dashboard.html', 
+                                user=session.get('username'), 
+                                role=session.get('role'),
+                                comments=comments,
+                                is_secure=session.get('is_secure') 
+                                )
+        except Exception as e:
+            return f"<h1>Dashboard Crash Report:</h1><p>{e}</p>"
 
 @app.route('/add_comment', methods=['POST'])
 @requires_roles('admin', 'user') # Protect this route!
