@@ -77,6 +77,14 @@
         {% endfor %}
     </div>
 </div>
+<script>
+function adjustForNav() {
+  const nav = document.querySelector('nav');
+  const navHeight = nav.getBoundingClientRect().height;
+  document.body.style.paddingTop = navHeight + 'px';
+}
 
+adjustForNav();
+window.addEventListener('resize', adjustForNav);</script>
 </body>
 </html>

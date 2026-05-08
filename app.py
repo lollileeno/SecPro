@@ -118,15 +118,15 @@ def secure_login():
         password = request.form["password"]
         
     is_valid, error_message = is_valid_input(username, password)
-        if not is_valid:
-            flash(error_message, 'danger')
-        # Quick validation check
-        if not username or not password:
-            flash('Username and password are required.', 'danger')
-            return render_template('secure_login.html')
+    if not is_valid:
+        flash(error_message, 'danger')
+    # Quick validation check
+    if not username or not password:
+        flash('Username and password are required.', 'danger')
+        return render_template('secure_login.html')
 
-        # Limit input length to prevent Buffer Overflow or DoS attempts
-       
+    # Limit input length to prevent Buffer Overflow or DoS attempts
+    
 
         db_con = create_database_connection()
         cur = db_con.cursor()
