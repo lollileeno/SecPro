@@ -63,7 +63,7 @@
         <li style="margin-bottom: 8px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
             <strong>{{ comment[1] }}:</strong> 
 
-            {% if is_secure %}
+            {% if comment[2] %}
                 <span style="color: green; font-size: 10px; font-weight: bold;">[SECURE]</span> 
                 {{ comment[0] }}
             {% else %}
