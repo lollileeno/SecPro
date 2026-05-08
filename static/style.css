@@ -62,6 +62,7 @@ nav a:hover{
 body {
   background: #f4f6f9;
   display: grid;
+  padding:2rem;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -249,9 +250,9 @@ a:hover {
     text-align: center;
     backdrop-filter: blur(10px); /* Makes that glass effect look better */
 }
-div#c2 {
+/* div#c2 {
     margin-top:23rem;
-}
+} */
 
 /* Add the Comment Feed Styling */
 .comments-container {
