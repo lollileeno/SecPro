@@ -247,7 +247,14 @@ def edit_comment(comment_id):
 def logout():
     session.clear()
     flash('You have been logged out.', 'success')
-    return redirect(url_for('home'))
+    response = make_response(redirect(url_for('home')))
+    
+    # 3. Explicitly tell the browser to delete the session cookie
+    # This 'closes' the session at the browser level
+    response.set_cookie('session', '', expires=0)
+    
+    flash('You have been logged out and your session cookie destroyed.', 'success')
+    return response
 
 
 #Shahad's edits
