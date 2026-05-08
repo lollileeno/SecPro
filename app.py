@@ -71,9 +71,9 @@ def requires_roles(*roles):
     return wrapper
 
 
-@app.route('/')  # ايمان: مهمتها تعلم السيرفر ايش الفنكشن اللي يشغلها في حال رابطنا ملحق ب '/' انفتح
+@app.route('/')
 def home():
-    return render_template('home.html')  # تحمل الملف المراد على براوزر اليوزر
+    return render_template('home.html') # تحمل الملف المراد على براوزر اليوزر
 
 
 @app.route('/login', methods=['GET', 'POST']) #the updated func!
