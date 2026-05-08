@@ -284,6 +284,7 @@ def add_comment():
     try:
         content = request.form['content']
         username = session.get('username')
+        secure= session.get('is_secure')
         
         db_con = create_database_connection()
         cur = db_con.cursor()
@@ -296,8 +297,8 @@ def add_comment():
             user_id = user_data[0]
             
             # Insert the comment with the correct user_id
-            sql = 'INSERT INTO "COMMENT" (content, user_id) VALUES (%s, %s)'
-            cur.execute(sql, (content, user_id))
+            sql = 'INSERT INTO "COMMENT" (content, user_id, is_secure) VALUES (%s, %s, %s)'
+            cur.execute(sql, (content, user_id, ))
             db_con.commit()
         
         cur.close()
