@@ -29,6 +29,13 @@
     <a href="/login">Vulnerable Version</a>
     <a href="/secure_login">Secure Version</a>
 </main>
-
+<script>
+function adjustForNav() {
+  const nav = document.querySelector('nav');
+  document.body.style.paddingTop = nav.getBoundingClientRect().height + 'px';
+}
+adjustForNav();
+window.addEventListener('resize', adjustForNav);
+</script>
 </body>
 </html>

@@ -21,17 +21,28 @@
         <p>Welcome to the protected admin area. You can manage user comments below.</p>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div style="padding: 10px; margin-bottom: 20px; border-radius: 8px; font-weight: bold;
-                          background-color: {% if category == 'danger' %}#f8d7da{% else %}#d1e7dd{% endif %};
-                          color: {% if category == 'danger' %}#721c24{% else %}#0f5132{% endif %};
-                          border: 1px solid {% if category == 'danger' %}#f5c6cb{% else %}#badbcc{% endif %};">
-                {{ message }}
-              </div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+  {% if messages %}
+    <div id="flash-container" style="width: 100%; margin-bottom: 20px;">
+      {% for category, message in messages %}
+        {% if category != 'access_denied' and category != 'unauthorized' %}
+          <div class="flash-message {{ category }}" style="
+              padding: 15px; 
+              border-radius: 12px; 
+              margin-bottom: 10px; 
+              font-weight: bold;
+              text-align: center;
+              border: 2px solid {% if category == 'danger' %}#dc3545{% else %}#198754{% endif %};
+              background-color: {% if category == 'danger' %}#f8d7da{% else %}#d1e7dd{% endif %};
+              color: {% if category == 'danger' %}#721c24{% else %}#0f5132{% endif %};
+              box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+              animation: fadeIn 0.5s ease-in-out;">
+            {{ message }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
         <hr style="margin: 20px 0;">
 

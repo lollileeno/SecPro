@@ -57,12 +57,12 @@ def requires_roles(*roles):
         @wraps(f)
         def wrapped(*args, **kwargs):
             if 'username' not in session:
-                flash('Please log in to access this page.', 'danger')
+                flash('Please log in to access this page.', 'access_denied')
                 return redirect(url_for('home'))
 
             if session.get('role') not in roles:
                 # This triggers the message
-                flash(f'Access denied: {", ".join(roles)} permissions required.', 'danger')
+                flash(f'Access denied: {", ".join(roles)} permissions required.', 'access_denied')
                 # Redirect to dashboard so the user can see the popup
                 return redirect(url_for('dashboard'))
 
@@ -239,7 +239,7 @@ def secure_register():
 @app.route('/admin')
 def admin():
     if 'username' not in session:
-        flash('Unauthorized! Please log in first to access the admin panel.', 'danger')
+        flash('Unauthorized! Please log in first to access the admin panel.', 'unauthorized')
         return redirect(url_for('login'))
     # Vulnerable: No @requires_roles decorator!
     db_con = create_database_connection()
