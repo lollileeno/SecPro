@@ -223,7 +223,7 @@ If vulnerable, a popup alert will appear.
 * **Normal "Secure" users:**
 
   * Can access comment system freely
-  * They have an access control which Prevent them to access normal admin panel By Administration Page Button
+  * They have an access control which Prevent them to access secure admin panel By Administration Page Button
     
 
 This demonstrates RBAC enforcement.
