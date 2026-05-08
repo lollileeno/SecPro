@@ -116,7 +116,10 @@ def secure_login():
     if request.method == 'POST':
         username = request.form["username"].strip()
         password = request.form["password"]
-
+        
+    is_valid, error_message = is_valid_input(username, password)
+        if not is_valid:
+            flash(error_message, 'danger')
         # Quick validation check
         if not username or not password:
             flash('Username and password are required.', 'danger')
