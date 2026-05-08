@@ -144,7 +144,18 @@ def register():
         db_con = create_database_connection()
         cur = db_con.cursor()
 
-        # Vulnerable SQL Injection + default 'user' role
+        # 1. Vulnerable Check: Using f-string (Susceptible to SQL Injection)
+        # This keeps the 'vulnerable' theme of this route
+        check_sql = f"SELECT username FROM \"USER\" WHERE username = '{username}'"
+        cur.execute(check_sql)
+        
+        if cur.fetchone():
+            flash('That username is already taken. Please choose another.', 'danger')
+            cur.close()
+            db_con.close()
+            return render_template('register.html')
+
+        # 2. Proceed with Vulnerable Insertion if user doesn't exist
         sql_query = f"INSERT INTO \"USER\" (username, password) VALUES ('{username}', '{md5hash_password}')"
 
         try:
@@ -153,8 +164,7 @@ def register():
             flash('Account created successfully!', 'success')
             return redirect(url_for('login'))
         except Exception as e:
-            print(e)
-            flash(f"Registeration failed: {e}", 'danger')
+            flash(f"Registration failed: {e}", 'danger')
             return render_template('register.html')
         finally:
             cur.close()
