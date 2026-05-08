@@ -65,10 +65,10 @@
 
             {% if comment[2] %}
                 <span style="color: green; font-size: 10px; font-weight: bold;">[SECURE]</span> 
-                {{ comment[0] }}
+                {{ comment[0] + comment[3] }}
             {% else %}
                 <span style="color: red; font-size: 10px; font-weight: bold;">[VULNERABLE]</span> 
-                {{ comment[0] | safe }}
+                {{ comment[0] + comment[3] | safe }}
             {% endif %}
         </li>
     {% endfor %}
